@@ -1,0 +1,26 @@
+{
+  "name": "narrasync",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Studio Audio Motion: naskah per act -> voiceover.mp3 + voice-timing.ts untuk Motion Canvas",
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "server",
+    "web"
+  ],
+  "engines": {
+    "node": ">=22.12 <23"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n server,web -c blue,magenta \"npm run dev -w @narrasync/server\" \"npm run dev -w @narrasync/web\"",
+    "start": "npm run start -w @narrasync/server",
+    "build": "npm run build -w @narrasync/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "typescript": "~5.9.3"
+  }
+}
