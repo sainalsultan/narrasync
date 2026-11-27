@@ -34,9 +34,10 @@ export function createFfmpeg(ffmpegPath: string, ffprobePath: string): FfmpegRun
       if (!Number.isFinite(d)) throw new Error(`Durasi tidak terbaca untuk ${file}`);
       return d;
     },
+    /** First line of `ffmpeg -version`, or null when ffmpeg or ffprobe cannot run. */
     async version() {
       try {
-        const { stdout } = await exec(ffmpegPath, ['-version']);
+        const [{ stdout }] = await Promise.all([exec(ffmpegPath, ['-version']), exec(ffprobePath, ['-version'])]);
         return stdout.split('\n')[0] ?? null;
       } catch {
         return null;

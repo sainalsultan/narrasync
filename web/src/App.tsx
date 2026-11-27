@@ -42,7 +42,7 @@ function ServerBanner() {
     );
   }
   if (health && !health.ffmpeg) {
-    return <div className="banner banner--warn">ffmpeg tidak ditemukan di server — render dan ekspor tidak akan jalan. Cek `ffmpeg -version`.</div>;
+    return <div className="banner banner--warn">ffmpeg/ffprobe tidak bisa dijalankan server — generate, render, dan ekspor tidak akan jalan. Jalankan ulang `npm install`, lalu lihat log server.</div>;
   }
   return null;
 }

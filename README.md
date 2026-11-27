@@ -9,8 +9,12 @@ naskah per act → TTS (Edge-TTS / upload manual) + efek suara di timeline → v
 
 ## Menjalankan (macOS Catalina 10.15 atau lebih baru)
 
-Prasyarat: **Node 22 LTS** (`nvm install 22`), **ffmpeg + ffprobe** di PATH (static build macOS Intel),
-Firefox terbaru atau Chrome 128.
+Prasyarat: **Node 22 LTS** (`nvm install 22`), Firefox terbaru atau Chrome 128.
+
+**ffmpeg + ffprobe ikut terpasang otomatis** lewat `npm install` (paket `ffmpeg-static` 6.1 dan `ffprobe-static`;
+build macOS Intel-nya minimum macOS 10.13, jadi jalan di Catalina). Urutan yang dipakai server:
+`FFMPEG_PATH`/`FFPROBE_PATH` di `.env` → binary dari npm → `ffmpeg`/`ffprobe` di PATH.
+Log server menampilkan path dan versi ffmpeg yang dipakai saat start.
 
 ```bash
 nvm use            # baca .nvmrc → 22

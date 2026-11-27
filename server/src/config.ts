@@ -1,4 +1,5 @@
 import { existsSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -17,6 +18,22 @@ export interface AppConfig {
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
+const require = createRequire(import.meta.url);
+
+/**
+ * Binaries bundled through npm (ffmpeg-static 6.1 / ffprobe-static), so no manual
+ * install is needed. Their macOS x64 builds target macOS 10.13+, i.e. they run on Catalina.
+ */
+function bundledBinary(pkg: 'ffmpeg-static' | 'ffprobe-static'): string | null {
+  try {
+    const mod = require(pkg) as string | { path: string } | null;
+    const file = typeof mod === 'string' ? mod : mod?.path;
+    return file && existsSync(file) ? file : null;
+  } catch {
+    return null;
+  }
+}
+
 function loadDotEnv(): void {
   const file = path.join(repoRoot, '.env');
   if (existsSync(file)) process.loadEnvFile(file);
@@ -31,8 +48,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     mode: env.STUDIO_MODE === 'hosted' ? 'hosted' : 'local',
     cacheDir: resolve(env.CACHE_DIR, 'cache'),
     projectsDir: resolve(env.PROJECTS_DIR, 'projects'),
-    ffmpegPath: env.FFMPEG_PATH ?? 'ffmpeg',
-    ffprobePath: env.FFPROBE_PATH ?? 'ffprobe',
+    // Priority: .env override → bundled npm binary → whatever is on PATH.
+    ffmpegPath: env.FFMPEG_PATH ?? bundledBinary('ffmpeg-static') ?? 'ffmpeg',
+    ffprobePath: env.FFPROBE_PATH ?? bundledBinary('ffprobe-static') ?? 'ffprobe',
     corsOrigins: (env.CORS_ORIGINS ?? 'http://localhost:5173,http://127.0.0.1:5173').split(',').map((s) => s.trim()),
   };
 }

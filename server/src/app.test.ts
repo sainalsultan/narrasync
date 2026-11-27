@@ -13,7 +13,8 @@ import { TtsRegistry } from './tts/registry.ts';
 
 /** Offline stand-in for Edge-TTS: 0.25 s of sine per word. */
 function fakeTts(): TtsProvider {
-  const ff = createFfmpeg('ffmpeg', 'ffprobe');
+  const cfg = loadConfig({});
+  const ff = createFfmpeg(cfg.ffmpegPath, cfg.ffprobePath);
   let calls = 0;
   return {
     id: 'edge',
