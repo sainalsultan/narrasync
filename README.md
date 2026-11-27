@@ -21,6 +21,18 @@ npm run dev        # web :5173 + server :8787
 
 Buka http://localhost:5173 di Firefox.
 
+### Catatan Catalina: esbuild dikunci ke 0.23.x
+
+Vite dan `tsx` memakai binary native **esbuild**. Mulai esbuild 0.24, binary macOS dibuat dengan Go 1.23+
+yang butuh macOS 11 (0.27+ butuh macOS 12), sehingga di Catalina gagal dengan
+`dyld: Symbol not found: _SecTrustCopyCertificateChain`. Karena itu:
+
+- `tsx` dikunci ke **4.19.2** (versi terakhir yang memakai esbuild `~0.23.0`);
+- `package.json` root memaksa `"overrides": { "esbuild": "0.23.1" }` (minimum macOS 10.13) untuk Vite 7.
+
+Jangan menaikkan `tsx` atau menghapus override ini selama masih di Catalina. Kalau `npm install` pernah gagal,
+hapus `node_modules` lalu install ulang. Cek dengan `npx esbuild --version` (harus `0.23.1`).
+
 | Script | Fungsi |
 | --- | --- |
 | `npm run dev` | Vite (5173) + server Fastify (8787, `tsx watch`) |
