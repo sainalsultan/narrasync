@@ -1,7 +1,7 @@
 node_modules/
 dist/
-cache/
-projects/
+/cache/
+/projects/
 .env
 .env.*
 !.env.example
